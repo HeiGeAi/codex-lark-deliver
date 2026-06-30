@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Lark Deliver"
+  short_description: "Send Lark completion notices and deliver generated files."
+  default_prompt: "Use $codex-lark-deliver to set up Feishu/Lark completion notices and file delivery for Codex."
