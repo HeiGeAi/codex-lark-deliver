@@ -22,8 +22,30 @@ The installer performs four actions:
    `npm i -g @larksuite/cli`
 2. Installs Zara Zhang's bridge package:
    `npm i -g lark-channel-bridge`
-3. Copies the `codex-lark-deliver` Skill into the user's Codex-visible skills directory.
-4. Writes an idempotent `CODEX-LARK-DELIVER` rules block into `AGENTS.md` or another chosen agent markdown file.
+3. Copies the `codex-lark-deliver` Skill into the agent-visible skills directories it finds — Codex (`~/.codex/skills`, `~/.agents/skills`) and, when present, Claude Code (`~/.claude/skills`).
+4. Writes an idempotent `CODEX-LARK-DELIVER` rules block into the Codex agent markdown (`AGENTS.md`) and, when present, into Claude Code's `~/.claude/CLAUDE.md`.
+
+The completion-notice command defaults to the **bot** identity
+(`lark-cli ... --as bot`), which is the natural sender for unattended notices and
+avoids leaning on a user token.
+
+## Claude Code: deterministic completion notices
+
+The markdown rule is best-effort — a model does not always run the notice
+command. For Claude Code you can make notices fire on **every** task completion
+with a Stop hook (enforced by the engine, not the model). See
+[`skills/codex-lark-deliver/references/claude-code-stop-hook.md`](skills/codex-lark-deliver/references/claude-code-stop-hook.md)
+and the ready-to-use `scripts/claude_stop_notify.py` (duration-gated so quick
+chats do not spam you, async send so it never slows the session).
+
+## Restrictive networks / behind an HTTP proxy
+
+If bot pairing hangs or replies fail intermittently (e.g. behind a local proxy,
+common in mainland China), read
+[`skills/codex-lark-deliver/references/setup-notes-restrictive-networks.md`](skills/codex-lark-deliver/references/setup-notes-restrictive-networks.md).
+It covers the `--app-id` / one-click "Agent app" path that avoids the QR flow,
+running separate apps for Claude and Codex bots, and several upstream
+`lark-channel-bridge` / `@larksuite/channel` proxy gotchas with workarounds.
 
 Authentication and QR pairing still require the user to authorize in Lark/Feishu. The script installs and configures the local pieces; it does not bypass Lark authorization.
 
@@ -98,8 +120,11 @@ Codex Lark Deliver does not replace those projects. It adds a small but importan
         ├── agents/openai.yaml
         ├── references/
         │   ├── agent-rules.md
-        │   └── setup-checklist.md
+        │   ├── claude-code-stop-hook.md
+        │   ├── setup-checklist.md
+        │   └── setup-notes-restrictive-networks.md
         └── scripts/
+            ├── claude_stop_notify.py
             ├── send_test_notice.ps1
             └── write_agent_rules.ps1
 ```

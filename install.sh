@@ -73,6 +73,9 @@ else
   if [[ -d "$HOME/.agents/skills" ]]; then
     targets+=("$HOME/.agents/skills")
   fi
+  if [[ -d "$HOME/.claude/skills" ]]; then
+    targets+=("$HOME/.claude/skills")
+  fi
 fi
 
 for target_root in "${targets[@]}"; do
@@ -110,7 +113,7 @@ lark_user_id = sys.argv[1]
 agent_markdown_path = sys.argv[2]
 
 if agent_markdown_path:
-    target = Path(agent_markdown_path).expanduser()
+    targets = [Path(agent_markdown_path).expanduser()]
 else:
     codex_home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))).expanduser()
     candidates = [
@@ -118,14 +121,15 @@ else:
         codex_home / "agents.markdown",
         codex_home / "AGENTS.markdown",
     ]
-    target = next((path for path in candidates if path.exists()), codex_home / "AGENTS.md")
-
-target.parent.mkdir(parents=True, exist_ok=True)
+    targets = [next((path for path in candidates if path.exists()), codex_home / "AGENTS.md")]
+    claude_md = Path.home() / ".claude" / "CLAUDE.md"
+    if claude_md.parent.exists():
+        targets.append(claude_md)
 
 template = """<!-- BEGIN CODEX-LARK-DELIVER -->
 ## Feishu/Lark Completion Notice and File Delivery
 
-These rules apply to every Codex task on this machine, including normal chat tasks, background work, and recurring automations.
+These rules apply to every AI coding-agent task on this machine (Codex, Claude Code, and others), including normal chat tasks, background work, and recurring automations.
 
 ### Completion Notice
 
@@ -133,7 +137,7 @@ These rules apply to every Codex task on this machine, including normal chat tas
 - Send the notice only to the user's own open_id unless the user explicitly names another recipient or group.
 - Recipient open_id: `{{LARK_USER_ID}}`.
 - Prefer this command shape:
-  `lark-cli im +messages-send --as user --user-id {{LARK_USER_ID}} --markdown "<message>"`
+  `lark-cli im +messages-send --as bot --user-id {{LARK_USER_ID}} --markdown "<message>"`
 - The notice must briefly include:
   - task name or subject;
   - completion status;
@@ -162,13 +166,15 @@ These rules apply to every Codex task on this machine, including normal chat tas
 
 block = template.replace("{{LARK_USER_ID}}", lark_user_id)
 marker = re.compile(r"<!-- BEGIN CODEX-LARK-DELIVER -->.*?<!-- END CODEX-LARK-DELIVER -->", re.S)
-current = target.read_text(encoding="utf-8") if target.exists() else "# Global Codex Agent Rules\n"
-if marker.search(current):
-    updated = marker.sub(block, current, count=1)
-else:
-    updated = current.rstrip() + "\n\n" + block + "\n"
-target.write_text(updated, encoding="utf-8")
-print(f"Updated agent markdown: {target}")
+for target in targets:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    current = target.read_text(encoding="utf-8") if target.exists() else "# Global Agent Rules\n"
+    if marker.search(current):
+        updated = marker.sub(block, current, count=1)
+    else:
+        updated = current.rstrip() + "\n\n" + block + "\n"
+    target.write_text(updated, encoding="utf-8")
+    print(f"Updated agent markdown: {target}")
 if lark_user_id == "YOUR_LARK_OPEN_ID":
     print("WARNING: The rules were written with a placeholder open_id. Re-run with --lark-user-id once you know the recipient open_id.", file=sys.stderr)
 PY
