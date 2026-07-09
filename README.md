@@ -114,3 +114,7 @@ Codex Lark Deliver does not replace those projects. It adds a small but importan
 ## License
 
 MIT
+
+## More open-source tools
+
+This project is part of the HeiGe AI open-source arsenal. Browse all projects with purpose and license at [heigeai.com/opensource](https://www.heigeai.com/en/opensource/).
