@@ -133,7 +133,7 @@ These rules apply to every Codex task on this machine, including normal chat tas
 - Send the notice only to the user's own open_id unless the user explicitly names another recipient or group.
 - Recipient open_id: `{{LARK_USER_ID}}`.
 - Prefer this command shape:
-  `lark-cli im +messages-send --as user --user-id {{LARK_USER_ID}} --markdown "<message>"`
+  `lark-cli im +messages-send --as bot --user-id {{LARK_USER_ID}} --markdown "<message>"`
 - The notice must briefly include:
   - task name or subject;
   - completion status;
