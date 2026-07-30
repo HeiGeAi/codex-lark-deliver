@@ -20,6 +20,17 @@ test "$(grep -c '<!-- BEGIN CODEX-LARK-DELIVER -->' "$TMP_HOME/AGENTS.md")" -eq 
 grep -q -- '--as bot --user-id ou_selftest' "$TMP_HOME/AGENTS.md"
 test -s "$TMP_HOME/skills/codex-lark-deliver/SKILL.md"
 
+for script in \
+  "$ROOT/install.ps1" \
+  "$ROOT/skills/codex-lark-deliver/scripts/send_test_notice.ps1"; do
+  if ! grep -Fq '$LASTEXITCODE' "$script"; then
+    echo "Missing explicit native exit-code propagation in $script" >&2
+    exit 1
+  fi
+done
+
+grep -Fq 'FAKE_NATIVE_EXIT_CODE' "$ROOT/tests/selftest.ps1"
+
 if grep -R -- '--as user' \
   "$ROOT/install.sh" \
   "$ROOT/skills/codex-lark-deliver"; then
