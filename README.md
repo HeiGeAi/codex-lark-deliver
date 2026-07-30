@@ -32,7 +32,7 @@ Authentication and QR pairing still require the user to authorize in Lark/Feishu
 Windows PowerShell:
 
 ```powershell
-git clone https://github.com/derrickgong87/codex-lark-deliver.git
+git clone https://github.com/HeiGeAi/codex-lark-deliver.git
 cd codex-lark-deliver
 powershell -ExecutionPolicy Bypass -File .\install.ps1 -LarkUserId "ou_your_open_id"
 ```
@@ -40,7 +40,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -LarkUserId "ou_your_open
 macOS/Linux:
 
 ```bash
-git clone https://github.com/derrickgong87/codex-lark-deliver.git
+git clone https://github.com/HeiGeAi/codex-lark-deliver.git
 cd codex-lark-deliver
 bash ./install.sh --lark-user-id "ou_your_open_id"
 ```

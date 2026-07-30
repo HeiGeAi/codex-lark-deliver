@@ -25,6 +25,17 @@ function Get-NpmCommand {
     return $command.Source
 }
 
+function Assert-NativeCommandSucceeded {
+    param(
+        [string]$CommandName,
+        [int]$ExitCode
+    )
+
+    if ($ExitCode -ne 0) {
+        throw "$CommandName failed with exit code $ExitCode."
+    }
+}
+
 function Assert-ChildPath {
     param(
         [string]$Child,
@@ -90,10 +101,18 @@ if (-not $SkipNpmInstall -or -not $SkipBridgeInstall) {
 
 if (-not $SkipNpmInstall) {
     & $npm install -g @larksuite/cli
+    $npmExitCode = $LASTEXITCODE
+    Assert-NativeCommandSucceeded `
+        -CommandName "npm install -g @larksuite/cli" `
+        -ExitCode $npmExitCode
 }
 
 if (-not $SkipBridgeInstall) {
     & $npm install -g lark-channel-bridge
+    $npmExitCode = $LASTEXITCODE
+    Assert-NativeCommandSucceeded `
+        -CommandName "npm install -g lark-channel-bridge" `
+        -ExitCode $npmExitCode
 }
 
 $targets = Get-SkillTargets -ExplicitRoot $SkillRoot

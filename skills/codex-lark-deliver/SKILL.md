@@ -26,7 +26,7 @@ Use this skill to connect an AI coding agent's completion loop to Feishu/Lark: e
 When performing or verifying a delivery flow:
 
 - Treat Lark authentication, bridge pairing, and recipient open_id as required state. Do not claim setup is complete if any of them is missing.
-- Use `lark-cli im +messages-send --as user --user-id <open_id> --markdown "<message>"` for completion notices when available.
+- Use `lark-cli im +messages-send --as bot --user-id <open_id> --markdown "<message>"` for completion notices when available.
 - For local deliverables, verify the file exists and is non-empty before sending it with Lark CLI file delivery.
 - For Feishu cloud docs, verify the real cloud doc is fetchable and include the clickable URL in the notice.
 - Preserve exact errors from Lark CLI, bridge startup, upload, or cloud-doc verification failures.
