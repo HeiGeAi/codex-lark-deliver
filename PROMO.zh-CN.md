@@ -13,4 +13,4 @@
 
 我额外做的事情是把安装、Skill 配置、Agent Markdown 提示词和交付纪律整理成一个可以复用的一键流程。适合已经在用 Codex、Claude Code、飞书，想把“任务完成提醒”和“文件交付”固定成默认工作流的人。
 
-GitHub：<https://github.com/derrickgong87/codex-lark-deliver>
+GitHub：<https://github.com/HeiGeAi/codex-lark-deliver>
