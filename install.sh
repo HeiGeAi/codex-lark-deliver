@@ -77,14 +77,18 @@ fi
 
 for target_root in "${targets[@]}"; do
   mkdir -p "$target_root"
-  destination="$target_root/codex-lark-deliver"
-  case "$destination" in
-    "$target_root"/*) ;;
-    *)
-      echo "Refusing to modify path outside target root: $destination" >&2
-      exit 1
-      ;;
-  esac
+  resolved_root="$(cd "$target_root" && pwd -P)"
+  destination="$resolved_root/codex-lark-deliver"
+  if [[ -e "$destination" || -L "$destination" ]]; then
+    resolved_destination="$(cd "$destination" && pwd -P)"
+    case "$resolved_destination" in
+      "$resolved_root"/codex-lark-deliver) ;;
+      *)
+        echo "Refusing to modify path outside target root: $resolved_destination" >&2
+        exit 1
+        ;;
+    esac
+  fi
   rm -rf "$destination"
   cp -R "$SKILL_SOURCE" "$destination"
   echo "Installed skill: $destination"
