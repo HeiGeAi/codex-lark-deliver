@@ -63,7 +63,7 @@ function Get-SkillTargets {
     }
     $targets.Add((Join-Path $codexHome "skills"))
 
-    $agentsSkills = Join-Path $HOME ".agents\skills"
+    $agentsSkills = Join-Path (Join-Path $HOME ".agents") "skills"
     if (Test-Path -LiteralPath $agentsSkills) {
         $targets.Add($agentsSkills)
     }
@@ -90,7 +90,7 @@ function Install-Skill {
 }
 
 $repoRoot = Get-RepoRoot
-$skillSource = Join-Path $repoRoot "skills\codex-lark-deliver"
+$skillSource = Join-Path (Join-Path $repoRoot "skills") "codex-lark-deliver"
 if (-not (Test-Path -LiteralPath $skillSource)) {
     throw "Skill source not found: $skillSource"
 }
@@ -119,7 +119,7 @@ $targets = Get-SkillTargets -ExplicitRoot $SkillRoot
 Install-Skill -Source $skillSource -Targets $targets
 
 if (-not $SkipAgentRules) {
-    $writer = Join-Path $skillSource "scripts\write_agent_rules.ps1"
+    $writer = Join-Path (Join-Path $skillSource "scripts") "write_agent_rules.ps1"
     if ($AgentMarkdownPath) {
         & $writer -LarkUserId $LarkUserId -AgentMarkdownPath $AgentMarkdownPath
     } else {

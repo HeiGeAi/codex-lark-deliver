@@ -29,7 +29,7 @@ try {
     if ($content -notmatch '--as bot --user-id ou_selftest') {
         throw "Bot delivery command was not installed"
     }
-    if (-not (Test-Path -LiteralPath (Join-Path $skillRoot "codex-lark-deliver\SKILL.md"))) {
+    if (-not (Test-Path -LiteralPath (Join-Path (Join-Path $skillRoot "codex-lark-deliver") "SKILL.md"))) {
         throw "Skill installation is missing"
     }
 
@@ -82,11 +82,11 @@ exit /b %FAKE_NATIVE_EXIT_CODE%
     if ($npmFailure -notmatch 'exit code 23') {
         throw "Expected npm exit code 23 to propagate, got: $npmFailure"
     }
-    if (Test-Path -LiteralPath (Join-Path $tempRoot "npm-failure-skills\codex-lark-deliver")) {
+    if (Test-Path -LiteralPath (Join-Path (Join-Path $tempRoot "npm-failure-skills") "codex-lark-deliver")) {
         throw "Installer continued after npm failed"
     }
 
-    $noticeScript = Join-Path $root "skills\codex-lark-deliver\scripts\send_test_notice.ps1"
+    $noticeScript = Join-Path (Join-Path (Join-Path (Join-Path $root "skills") "codex-lark-deliver") "scripts") "send_test_notice.ps1"
     $fakeLarkCommand = Join-Path $fakeBin "lark-cli.cmd"
     $testFile = Join-Path $tempRoot "test-delivery.txt"
     Set-Content -LiteralPath $testFile -Value "selftest artifact" -Encoding Utf8
