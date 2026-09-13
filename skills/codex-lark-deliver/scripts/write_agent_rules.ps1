@@ -96,6 +96,9 @@ $markerPattern = "(?s)<!-- BEGIN CODEX-LARK-DELIVER -->.*?<!-- END CODEX-LARK-DE
 
 if (Test-Path -LiteralPath $targetPath) {
     $current = Get-Content -LiteralPath $targetPath -Raw
+    if (-not $current) {
+        $current = "# Global Codex Agent Rules`r`n"
+    }
 } else {
     $current = "# Global Codex Agent Rules`r`n"
 }
