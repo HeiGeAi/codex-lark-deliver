@@ -93,7 +93,16 @@ Codex Lark Deliver does not replace those projects. It adds a small but importan
 .
 ├── install.ps1
 ├── install.sh
+├── LICENSE
 ├── PROMO.zh-CN.md
+├── README.md
+├── SECURITY.md
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── tests/
+│   ├── selftest.ps1
+│   └── selftest.sh
 └── skills/
     └── codex-lark-deliver/
         ├── SKILL.md
