@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Pinned dependency versions (supply-chain safety). Bump deliberately, then verify.
+LARK_CLI_PACKAGE="@larksuite/cli@1.0.95"
+BRIDGE_PACKAGE="lark-channel-bridge@0.7.1"
+
 LARK_USER_ID="YOUR_LARK_OPEN_ID"
 AGENT_MARKDOWN_PATH=""
 SKILL_ROOT=""
@@ -57,11 +61,11 @@ if [[ "$SKIP_NPM_INSTALL" -eq 0 || "$SKIP_BRIDGE_INSTALL" -eq 0 ]]; then
 fi
 
 if [[ "$SKIP_NPM_INSTALL" -eq 0 ]]; then
-  npm install -g @larksuite/cli
+  npm install -g "$LARK_CLI_PACKAGE"
 fi
 
 if [[ "$SKIP_BRIDGE_INSTALL" -eq 0 ]]; then
-  npm install -g lark-channel-bridge
+  npm install -g "$BRIDGE_PACKAGE"
 fi
 
 targets=()

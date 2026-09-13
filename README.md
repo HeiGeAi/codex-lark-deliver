@@ -18,14 +18,16 @@ This project adds the missing operating discipline: when the agent finishes, it 
 
 The installer performs four actions:
 
-1. Installs the official Lark CLI:
-   `npm i -g @larksuite/cli`
-2. Installs Zara Zhang's bridge package:
-   `npm i -g lark-channel-bridge`
+1. Installs the official Lark CLI (version pinned in the installer):
+   `npm i -g @larksuite/cli@1.0.95`
+2. Installs Zara Zhang's bridge package (version pinned in the installer):
+   `npm i -g lark-channel-bridge@0.7.1`
 3. Copies the `codex-lark-deliver` Skill into the user's Codex-visible skills directory.
 4. Writes an idempotent `CODEX-LARK-DELIVER` rules block into `AGENTS.md` or another chosen agent markdown file.
 
 Authentication and QR pairing still require the user to authorize in Lark/Feishu. The script installs and configures the local pieces; it does not bypass Lark authorization.
+
+Both npm dependencies are pinned to an exact version in `install.sh` and `install.ps1` (`LARK_CLI_PACKAGE` / `BRIDGE_PACKAGE` or `$LarkCliPackage` / `$BridgePackage`) as a supply-chain safeguard. To upgrade, bump the pinned version deliberately in both installers, review the upstream changelog, and re-run the self-tests.
 
 ## Quick Start
 

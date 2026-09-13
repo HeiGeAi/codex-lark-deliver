@@ -10,6 +10,10 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Pinned dependency versions (supply-chain safety). Bump deliberately, then verify.
+$LarkCliPackage = "@larksuite/cli@1.0.95"
+$BridgePackage = "lark-channel-bridge@0.7.1"
+
 function Get-RepoRoot {
     return [System.IO.Path]::GetFullPath($PSScriptRoot)
 }
@@ -100,18 +104,18 @@ if (-not $SkipNpmInstall -or -not $SkipBridgeInstall) {
 }
 
 if (-not $SkipNpmInstall) {
-    & $npm install -g @larksuite/cli
+    & $npm install -g $LarkCliPackage
     $npmExitCode = $LASTEXITCODE
     Assert-NativeCommandSucceeded `
-        -CommandName "npm install -g @larksuite/cli" `
+        -CommandName "npm install -g $LarkCliPackage" `
         -ExitCode $npmExitCode
 }
 
 if (-not $SkipBridgeInstall) {
-    & $npm install -g lark-channel-bridge
+    & $npm install -g $BridgePackage
     $npmExitCode = $LASTEXITCODE
     Assert-NativeCommandSucceeded `
-        -CommandName "npm install -g lark-channel-bridge" `
+        -CommandName "npm install -g $BridgePackage" `
         -ExitCode $npmExitCode
 }
 
