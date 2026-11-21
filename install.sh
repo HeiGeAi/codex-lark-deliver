@@ -12,17 +12,27 @@ SKIP_NPM_INSTALL=0
 SKIP_BRIDGE_INSTALL=0
 SKIP_AGENT_RULES=0
 
+require_arg() {
+  if [[ $# -lt 2 || -z "${2:-}" ]]; then
+    echo "Option $1 requires a value." >&2
+    exit 2
+  fi
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --lark-user-id)
+      require_arg "$1" "${2:-}"
       LARK_USER_ID="$2"
       shift 2
       ;;
     --agent-markdown-path)
+      require_arg "$1" "${2:-}"
       AGENT_MARKDOWN_PATH="$2"
       shift 2
       ;;
     --skill-root)
+      require_arg "$1" "${2:-}"
       SKILL_ROOT="$2"
       shift 2
       ;;
@@ -79,11 +89,32 @@ else
   fi
 fi
 
+seen_roots=()
 for target_root in "${targets[@]}"; do
   mkdir -p "$target_root"
   resolved_root="$(cd "$target_root" && pwd -P)"
+  already_seen=0
+  for existing in "${seen_roots[@]+"${seen_roots[@]}"}"; do
+    if [[ "$existing" == "$resolved_root" ]]; then
+      already_seen=1
+      break
+    fi
+  done
+  if [[ "$already_seen" -eq 1 ]]; then
+    continue
+  fi
+  seen_roots+=("$resolved_root")
+
   destination="$resolved_root/codex-lark-deliver"
-  if [[ -e "$destination" || -L "$destination" ]]; then
+  if [[ -L "$destination" ]]; then
+    echo "Refusing to modify symlink at destination: $destination" >&2
+    exit 1
+  fi
+  if [[ -e "$destination" ]]; then
+    if [[ ! -d "$destination" ]]; then
+      echo "Refusing to overwrite non-directory at destination: $destination" >&2
+      exit 1
+    fi
     resolved_destination="$(cd "$destination" && pwd -P)"
     case "$resolved_destination" in
       "$resolved_root"/codex-lark-deliver) ;;
@@ -172,7 +203,7 @@ block = template.replace("{{LARK_USER_ID}}", lark_user_id)
 marker = re.compile(r"<!-- BEGIN CODEX-LARK-DELIVER -->.*?<!-- END CODEX-LARK-DELIVER -->", re.S)
 current = target.read_text(encoding="utf-8") if target.exists() else "# Global Codex Agent Rules\n"
 if marker.search(current):
-    updated = marker.sub(block, current, count=1)
+    updated = marker.sub(lambda _: block, current, count=1)
 else:
     updated = current.rstrip() + "\n\n" + block + "\n"
 target.write_text(updated, encoding="utf-8")
